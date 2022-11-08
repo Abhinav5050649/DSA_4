@@ -1,0 +1,288 @@
+Notes:
+
+1) Recursion: Function which calls itself
+2) Occupies some stack memory for each instance or iteration
+3) Should have an end condition
+4) Stack Overflow: Caused due to numerous function calls which cause the program to terminate unexpectedly
+5) Base Condition: Condition used to stop the recursive process
+6) Be careful while formulatiing the base case of any recursive function
+7) Usually recursive functions are not written in order to prevent stack overflow
+8) Recursion Tree:
+	
+	A function calling other instances of the same function and so on till the base case is reached is called recursion tree. The reason why this is the term used for this phenomenon is becuase the instances when drawn out and solved resemble the branches of a tree.
+
+9) Problems:
+	a) Print Name 5 times
+	b) Print linearly from 1 to N
+	c) Print from N to 1
+	d) Print linearly from 1 to N (Kind of by backtracking)
+	e) Print from N to 1 (By Backtrack)
+
+10) Subsequences -> A contiguous or non-continguous sequence which follows the order
+
+11) Power Set is an algorithm to find subsequences of a set
+
+12) Subsequences using Recursion:
+//Code
+#include "bits/stdc++.h"
+using namespace std;
+
+void print_seq(int ind, vector<int> &ds, int arr[], int n)
+{
+    if (ind >= n)
+    {
+        
+        if(ds.size() == 0)
+            cout << "{}" << endl;
+        else
+        {
+            for (auto it = ds.begin(); it != ds.end(); it++)
+                cout << *it << " ";
+            cout << endl;
+        }
+        return;
+    }
+    
+    ds.push_back(arr[ind]);
+    print_seq(ind + 1, ds, arr, n);
+    ds.pop_back();
+    print_seq(ind + 1, ds, arr, n);
+}
+
+int main()
+{
+    int arr[] = {3, 1, 2};
+    vector<int> store;
+    print_seq(0, store, arr, 3);
+
+    return 0;
+}
+
+13) Print Subsequence with sum K
+
+//Code for printing all cases
+#include "bits/stdc++.h"
+using namespace std;
+
+void PrintS(int ind, vector<int> &ds, int s, int sum, int arr[], int n)
+{
+    if (ind == n)
+    {
+        if (s == sum)
+        {
+            for (auto it : ds)
+                cout << it << " ";
+            cout << endl;
+
+            return;
+        }
+        else
+            return;
+    }
+    ds.push_back(arr[ind]);
+    s += arr[ind];
+    PrintS(ind + 1, ds, s, sum, arr, n);
+
+    ds.pop_back();
+    s -= arr[ind];
+    PrintS(ind + 1, ds, s, sum, arr, n);
+}
+
+int main()
+{
+    int arr[] = {1, 2, 1};
+    vector<int> ds;
+    int sum = 2, n = 3;
+    PrintS(0, ds, 0, sum, arr, n);
+
+    ds.clear();
+    return 0;
+}
+
+//Code for only one case as output
+//--> In base case, if condition is satisfied, return true. Else, return false;
+//--> If function call condition true, return
+
+#include "bits/stdc++.h"
+using namespace std;
+
+bool PrintS(int ind, vector<int> &ds, int s, int sum, int arr[], int n)
+{
+    if (ind == n)
+    {
+        if (s == sum)
+        {
+            for (auto it : ds)
+                cout << it << " ";
+            cout << endl;
+
+            return true;
+        }
+        else
+            return false;
+    }
+    ds.push_back(arr[ind]);
+    s += arr[ind];
+    if (PrintS(ind + 1, ds, s, sum, arr, n) == true)
+        return true;
+
+    ds.pop_back();
+    s -= arr[ind];
+    if (PrintS(ind + 1, ds, s, sum, arr, n) == true)
+        return true;
+
+    return false;
+}
+
+int main()
+{
+    int arr[] = {1, 2, 1};
+    vector<int> ds;
+    int sum = 2, n = 3;
+    PrintS(0, ds, 0, sum, arr, n);
+
+    ds.clear();
+    return 0;
+}
+
+14) Count Subsequences with sum 'K'
+
+//Code
+
+#include "bits/stdc++.h"
+using namespace std;
+
+int PrintS(int ind, int s, int sum, int arr[], int n)
+{
+    if (ind == n)
+    {
+        if (s == sum)
+            return 1;
+        else
+            return 0;
+    }
+
+    s += arr[ind];
+    int l = PrintS(ind + 1, s, sum, arr, n);
+
+    s -= arr[ind];
+    int r = PrintS(ind + 1, s, sum, arr, n);
+
+    return l + r;
+}
+
+int main()
+{
+    int arr[] = {1, 2, 1};
+    int sum = 2, n = 3, s = 0;
+    cout << PrintS(0, 0, sum, arr, n) << endl;
+
+    return 0;
+}
+
+15) Algorithm Solution for Combination Sum-I LEETCODE QUESTION
+
+class Solution {
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> path;
+        int ind = 0, t = target, n = candidates.size();
+        
+        Solve(ind, t, path, res, candidates);   
+        return res;
+    }
+    
+private:
+    void Solve(int ind, int t, vector<int> &store, vector<vector<int>> &ds, vector<int> &candidates)
+    {
+        if (ind == candidates.size())
+        {
+            if (t == 0)
+            {
+                ds.push_back(store);
+            }
+                return;
+        }
+        
+       if (candidates[ind] <= t)
+       {
+           store.push_back(candidates[ind]);
+           Solve(ind, t - candidates[ind], store, ds, candidates);
+           store.pop_back();
+       }
+        
+        Solve(ind + 1, t, store, ds, candidates);
+       
+    }
+};
+
+16) Permutations of a string or array
+
+-->Method 1:-
+
+class Solution{
+    private:
+    void recurPermute(vector<int> &ds, vector<int> &nums, vector<vector<int>> &ans, int freq[])
+    {
+        if (ds.size() == nums.size())
+        {
+            ans.push_back(ds);
+            return;
+        }
+
+        for (int i = 0; i < nums.size(); i++)
+        {
+            if (!freq[i])
+            {
+                ds.push_back(nums[i]);
+                freq[i];
+                recurPermute(ds, nums, ans, freq);
+                freq[i] = 0;
+                ds.pop_back();
+            }
+        }
+    }
+
+    public:
+    vector<vector<int>> permute(vector<int> &nums)
+    {
+        vector<vector<int>> ans;
+        vector<int> ds;
+        int freq[nums.size()] = {0};
+        for (int i = 0; i < nums.size(); i++)freq[i] = 0;
+        recurPermute(ds, nums, ans, freq);
+        return ans;
+
+    }
+}
+
+-->Method 2:-
+
+class Solution{
+    
+    private:
+        void recurPermute(int index, vector<int> &nums, vector<vector<int>> &ans)
+        {
+            if (index == nums.size())
+            {
+                ans.push_back(nums);
+                return;
+            }
+
+            for (int i = index; i < nums.size(); i++)
+            {
+                swap(nums[index], nums[i]);
+                recurPermute(index + 1, nums, ans);
+                swap(nums[index], nums[i]);
+            }
+        }
+
+    public:
+        vector<vector<int>> permute(vector<int> &nums)
+        {
+            vector<vector<int>> ans;
+            recurPermute(0, nums, ans);
+            return ans;
+        }
+}
